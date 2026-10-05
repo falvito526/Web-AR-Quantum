@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>WebAR Interferensi Gelombang Kuantum</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+  <div id="intro">
+    <div class="card">
+      <h1>WebAR: Interferensi Gelombang Kuantum</h1>
+      <p>Arahkan kamera HP ke <b>Hiro Marker</b>. Setelah terdeteksi, alat eksperimen 3D akan muncul.</p>
+      <ol>
+        <li>Izinkan akses kamera.</li>
+        <li>Letakkan marker datar dan cukup terang.</li>
+        <li>Jaga jarak kamera sekitar 20–50 cm.</li>
+      </ol>
+      <button id="startBtn">Mulai AR</button>
+      <p class="small">Untuk keamanan browser, WebAR harus dijalankan melalui HTTPS atau localhost.</p>
+    </div>
+  </div>
+
+  <div id="controls" class="hidden">
+    <div class="panel">
+      <div class="title">Eksperimen AR</div>
+      <label>Panjang gelombang λ: <span id="lambdaVal">550 nm</span></label>
+      <input id="lambda" type="range" min="400" max="700" value="550">
+
+      <label>Jarak antarslit d: <span id="slitVal">0.50</span></label>
+      <input id="slit" type="range" min="0.10" max="1.00" step="0.05" value="0.50">
+
+      <label>Jarak slit–layar L: <span id="distVal">1.00</span></label>
+      <input id="distance" type="range" min="0.50" max="2.00" step="0.10" value="1.00">
+
+      <div class="row">
+        <button id="sourceBtn">Sumber ON</button>
+        <button id="slitBtn">Dua Celah</button>
+        <button id="modeBtn">Intensity</button>
+      </div>
+      <div class="row">
+        <button id="clearBtn">Reset Data</button>
+        <button id="fullscreenBtn">Layar Penuh</button>
+      </div>
+      <div id="status">Marker belum terdeteksi.</div>
+    </div>
+  </div>
+
+  <a-scene
+    id="scene"
+    embedded
+    vr-mode-ui="enabled:false"
+    renderer="antialias:true; alpha:true"
+    arjs="sourceType:webcam; debugUIEnabled:false; detectionMode:mono_and_matrix; matrixCodeType:3x3;"
+    gesture-detector
+  >
+    <a-marker id="marker" preset="hiro" smooth="true" smooth-count="10" smooth-tolerance="0.01" smooth-threshold="5">
+      <a-entity id="lab" position="0 0 0">
+
+        <!-- base -->
+        <a-box position="0 0.02 0" width="2.8" height="0.04" depth="1.2" color="#18212b"></a-box>
+
+        <!-- source -->
+        <a-cylinder position="-1.0 0.28 0" radius="0.22" height="0.38" rotation="0 0 90" color="#34495e"></a-cylinder>
+        <a-sphere id="sourceGlow" position="-0.82 0.28 0" radius="0.08" color="#20a4ff" emissive="#20a4ff"></a-sphere>
+
+        <!-- wave fronts -->
+        <a-ring id="wave1" position="-0.65 0.28 0" rotation="90 0 0" radius-inner="0.02" radius-outer="0.05" color="#20a4ff"></a-ring>
+        <a-ring id="wave2" position="-0.65 0.28 0" rotation="90 0 0" radius-inner="0.08" radius-outer="0.11" color="#20a4ff"></a-ring>
+        <a-ring id="wave3" position="-0.65 0.28 0" rotation="90 0 0" radius-inner="0.14" radius-outer="0.17" color="#20a4ff"></a-ring>
+
+        <!-- double slit barrier -->
+        <a-box position="0 0.32 0" width="0.08" height="0.65" depth="0.95" color="#707b86"></a-box>
+        <a-box id="slitTop" position="0 0.32 0.23" width="0.12" height="0.16" depth="0.20" color="#101820"></a-box>
+        <a-box id="slitBottom" position="0 0.32 -0.23" width="0.12" height="0.16" depth="0.20" color="#101820"></a-box>
+
+        <!-- detector screen -->
+        <a-box position="1.05 0.34 0" width="0.06" height="0.72" depth="1.05" color="#111827"></a-box>
+        <a-plane id="screen" position="1.015 0.34 0" rotation="0 90 0" width="0.82" height="0.62" color="#02060a"></a-plane>
+        <a-entity id="intensityBars" position="1.00 0.36 0"></a-entity>
+        <a-entity id="hits" position="1.00 0.36 0"></a-entity>
+
+        <!-- labels -->
+        <a-text value="SUMBER" position="-1.1 0.75 0" rotation="0 0 0" align="center" width="1.2" color="#ffffff"></a-text>
+        <a-text value="CELAH" position="-0.02 0.75 0" rotation="0 0 0" align="center" width="1.0" color="#ffffff"></a-text>
+        <a-text value="LAYAR DETEKTOR" position="1.02 0.78 0" rotation="0 0 0" align="center" width="1.8" color="#ffffff"></a-text>
+
+      </a-entity>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script src="app.js"></script>
+</body>
+</html>
